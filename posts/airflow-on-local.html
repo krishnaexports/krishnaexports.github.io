@@ -1,8 +1,8 @@
-<h3 id="readme-for-pipeline-setup-and-deployment">Readme for pipeline setup and deployment</h3>
+<h3>Readme for pipeline setup and deployment</h3>
 <p>Local K8s setup(Kind)</p>
 <ol>
 <li>Install docker</li>
-<li>Install docker-compose </li>
+<li>Install docker-compose</li>
 <li>Install kind</li>
 <li>Install kubectl</li>
 </ol>
@@ -35,10 +35,10 @@ helm install airflow apache-airflow/airflow --namespace airflow --debug
 <p>Listen on port 8080 on all addresses, forwarding to 8080</p>
 <pre><code>kubectl port-forward svc/airflow-webserver 8080:8080 -n airflow --context kind-airflow-cluster --address 0.0.0.0
 </code></pre>
-<p>Make sure database settings  present in variables.yaml (POSTGRES_HOST and POSTGRES_PORT ) and the ones present in values.yml are pointing to the sbaiv2 database </p>
+<p>Make sure database settings  present in variables.yaml (POSTGRES_HOST and POSTGRES_PORT ) and the ones present in values.yml are pointing to the sbaiv2 database</p>
 <p>If you have some variables or connections that you want to export each time your Airflow instance gets deployed, you can define a ConfigMap. Open variables.yaml. This ConfigMap will export the environment variables under data. Great to have some bootstrap connections/variables.</p>
 <p><code>kubectl apply -f variables.yaml</code></p>
-<h3 id="build-the-custom-docker-image-and-load-it-into-your-local-kubernetes-cluster">Build the custom docker image and load it into your local Kubernetes cluster</h3>
+<h3>Build the custom docker image and load it into your local Kubernetes cluster</h3>
 <pre><code># Run below commands from project root directory
 docker build -t airflow-custom:1.0.0 -f pipeline/infra-setup/Dockerfile .
 kind load docker-image airflow-custom:1.0.0 --name airflow-cluster
@@ -46,7 +46,7 @@ kind load docker-image airflow-custom:1.0.0 --name airflow-cluster
 <p>Note : If you are using MAC M1 machine please use following command to build image :</p>
 <pre><code>docker build --platform linux/amd64 -t airflow-custom:1.0.0 -f pipeline/infra-setup/Dockerfile . 
 </code></pre>
-<h3 id="logs-with-airflow-on-kubernetes">Logs with Airflow on Kubernetes</h3>
+<h3>Logs with Airflow on Kubernetes</h3>
 <p>With the KubernetesExecutor, when a task is triggered a POD is created. Once the task is completed, the corresponding POD gets deleted and so the logs.  Therefore, you need to find a way to store your logs somewhere so that you can still access them. For local development, the easiest way is to configure a HostPath PV. Let’s do it! First thing first, you should already have a folder data/ created next to the file kind-custer.yaml.</p>
 <p>Next, to provide a durable location to prevent data from being lost, you have to set up the Persistent Volume.</p>
 <pre><code>kubectl apply -f pv.yaml
@@ -64,43 +64,47 @@ helm ls -n airflow
 <p>Some useful commands related to Helm(Rollback to specific deployment)</p>
 <pre><code>helm rollback airflow &lt;release-version&gt; -n airflow
 </code></pre>
-<p>In case of timeout error please increase timeout by adding --timeout=15m. </p>
+<p>In case of timeout error please increase timeout by adding --timeout=15m.</p>
 <p>The logs should be accessible in infra-setup/data folder. Please check that this folder has the right permissions. You can do so by executing the following command:</p>
 <pre><code>chmod 777 ./data
 </code></pre>
-<h3 id="next-steps">Next Steps</h3>
+<h3>Next Steps</h3>
 <ul>
-<li>If the installation is done on a VM, it&#39;s possible to create a network tunnel to be able to view the Django admin and Airflow UI on local machine by running the following command with the port numbers for Airflow or Django:</li>
+<li>If the installation is done on a VM, it's possible to create a network tunnel to be able to view the Django admin and Airflow UI on local machine by running the following command with the port numbers for Airflow or Django:</li>
 </ul>
 <pre><code>ssh -i&lt;pemfile&gt; -N -L 8000:&lt;VM IP ADDRESS&gt;:8000 &lt;USERNAME&gt;@&lt;VM IP ADDRESS&gt; -- to be executed on local machine 
 </code></pre>
 <ul>
-<li>The pipelines are setup to ingest data from files hosted on s3. If you&#39;re using this storage service, you need to make sure your machine has IAM role to access ,list , delete and update files on s3 bucket you’re using for dags. 
+<li>The pipelines are setup to ingest data from files hosted on s3. If you're using this storage service, you need to make sure your machine has IAM role to access ,list , delete and update files on s3 bucket you’re using for dags.
 When working with VMs, please contact gamma platform for creating IAM role to enable access to the s3 bucket.</li>
 </ul>
-<h3 id="debugging-and-useful-commands">Debugging and useful commands</h3>
-<p>Here are some commands to help you debug errors. </p>
+<h3>Debugging and useful commands</h3>
+<p>Here are some commands to help you debug errors.</p>
 <ul>
-<li><p>To list pods and check which one is failing :</p>
+<li>To list pods and check which one is failing :</li>
+</ul>
 <pre><code>kubectl get pods -n airflow 
 </code></pre>
-</li>
-<li><p>To check logs for specific pod : </p>
+<ul>
+<li>To check logs for specific pod :</li>
+</ul>
 <pre><code>Kubectl logs pod-name -n airflow 
 </code></pre>
-</li>
-<li><p>To execute scheduler pod and access airflow folders:</p>
+<ul>
+<li>To execute scheduler pod and access airflow folders:</li>
+</ul>
 <pre><code>kubectl exec scheduler-pod-name -n airflow -it -- /bin/bash 
 </code></pre>
-</li>
-<li><p>To restore a specific version deployed </p>
+<ul>
+<li>To restore a specific version deployed</li>
+</ul>
 <pre><code>helm rollback airflow &lt;version-number&gt; -n airflow 
 </code></pre>
-</li>
-<li><p>To describe pod execution :  </p>
+<ul>
+<li>To describe pod execution :</li>
+</ul>
 <pre><code>kubectl describe pod pod-name –n airflow 
 </code></pre>
-</li>
-<li><p>In case of DAG Processor timeout error please increase timeout for the following parameters(AIRFLOW__CORE__DAG_FILE_PROCESSOR_TIMEOUT) in values.yaml file in pipeline/infra .Make sure to build the image and deploy it again.</p>
-</li>
+<ul>
+<li>In case of DAG Processor timeout error please increase timeout for the following parameters(AIRFLOW__CORE__DAG_FILE_PROCESSOR_TIMEOUT) in values.yaml file in pipeline/infra .Make sure to build the image and deploy it again.</li>
 </ul>
