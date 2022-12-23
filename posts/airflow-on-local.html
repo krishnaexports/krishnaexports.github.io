@@ -3,7 +3,7 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Page Title</title>
+    <title>Airflow Local Setup</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <script src='main.js'></script>
@@ -12,33 +12,42 @@
             background-color: #efefef;
             max-width: 600px;
             max-height: 600px;
-            margin-left: 5%;
+            margin-left: 2%;
             overflow: auto;
-            padding: 1rem;
+            padding-left: 1rem;
         }
         .sub-heading{
             font-size: 14px;
             text-decoration: underline;
-            font-weight: 500;
+            font-weight: 502;
+        }
+        .body-content{
+            padding-left: 1rem;
+        }
+        .inner-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
     </style>
 </head>
 <body>
     <div class="header">
-        <div>
+        <div class="inner-header">
+            <div></div>
+            <div style="text-decoration: underline;">
+                <h1>Airflow Setup on local linux kind kubernetes cluster</h1>
+            </div>
             <nav>
                 <a href="https://yashag66.github.io">Home</a> |
                 <a href="posts/blogs.html">My Blogs</a> |
-                <a href="javascript:history.back()">Go Back</a> |
+                <a href="javascript:history.back()">Go Back</a> | 
                 <a href="https://www.linkedin.com/in/yashagarwal66/">LinkedIn</a> |
-                </nav>
+            </nav>
         </div>
     </div>
-    
-
-
-<h3>Readme for pipeline setup and deployment</h3>
+    <div class="body-content">
 <div>
     <p class="sub-heading">Local K8s setup(Kind)</p>
     <ul>
@@ -48,29 +57,42 @@
         <li>Install kubectl</li>
     </ul>
 </div>
-<div>
 
+<div class="code-section">
+    <p>
+        kind create cluster --name airflow-cluster --config kind-local-cluster-setup.yaml 
+    </p>
 </div>
-<pre><code>kind create cluster --name airflow-cluster --config kind-local-cluster-setup.yaml
-</code></pre>
-<p>You can do some checks</p>
-<pre><code>kubectl cluster-info
-kubectl get nodes -o wide
-</code></pre>
-<p>To deploy Airflow on Kubernetes, the first step is to create a namespace.</p>
-<pre><code>kubectl create namespace airflow
-kubectl get namespaces
-</code></pre>
-<p>Then, thanks to Helm, you need to fetch the official Helm of Apache Airflow that will magically get deployed on your cluster. Or, almost magically 😅</p>
 
-    <div class="code-section">
-<pre>
-helm repo add apache-airflow https://airflow.apache.org
-helm repo update
-helm search repo airflow
-helm install airflow apache-airflow/airflow --namespace airflow --debug
-</pre>
-    </div>
+<p>You can do some checks</p>
+<div class="code-section">
+    <p>
+        kubectl cluster-info<br/>
+        kubectl get nodes -o wide 
+    </p>
+</div>
+
+<p>To deploy Airflow on Kubernetes, the first step is to create a namespace.</p>
+
+<div class="code-section">
+    <p>
+        kubectl create namespace airflow <br/>
+        kubectl get namespaces
+    </p>
+</div>
+
+<p>
+    Then, thanks to Helm, you need to fetch the official Helm of Apache Airflow that will magically get deployed on your cluster. Or, almost magically 😅
+</p>
+
+<div class="code-section">
+    <p>
+    helm repo add apache-airflow https://airflow.apache.org <br/>
+    helm repo update <br/>
+    helm search repo airflow <br/>
+    helm install airflow apache-airflow/airflow --namespace airflow --debug
+    </p>
+</div>
 <p>After a few minutes, you should be able to see your Pods running, corresponding to the different Airflow components.</p>
 <pre><code>kubectl get pods -n airflow
 </code></pre>
@@ -157,5 +179,6 @@ When working with VMs, please contact gamma platform for creating IAM role to en
 <ul>
 <li>In case of DAG Processor timeout error please increase timeout for the following parameters(AIRFLOW__CORE__DAG_FILE_PROCESSOR_TIMEOUT) in values.yaml file in pipeline/infra .Make sure to build the image and deploy it again.</li>
 </ul>
+</div>
 </body>
 </html>
