@@ -1,0 +1,83 @@
+<h3 id="readme-for-pipeline-setup-and-deployment">Readme for pipeline setup and deployment</h3>
+<p>Local K8s setup(Kind)</p>
+<ol>
+<li>Install docker</li>
+<li>Install docker-compose </li>
+<li>Install kind</li>
+<li>Install kubectl</li>
+</ol>
+<pre><code>kind create <span class="hljs-keyword">cluster</span> --name airflow-<span class="hljs-keyword">cluster</span> --config kind-<span class="hljs-keyword">local</span>-<span class="hljs-keyword">cluster</span>-setup.yaml
+</code></pre><p>You can do some checks</p>
+<pre><code><span class="hljs-symbol">kubectl</span> cluster-<span class="hljs-meta">info</span>
+<span class="hljs-symbol">kubectl</span> <span class="hljs-meta">get</span> nodes -o wide
+</code></pre><p>To deploy Airflow on Kubernetes, the first step is to create a namespace.</p>
+<pre><code>kubectl create <span class="hljs-keyword">namespace</span> airflow
+kubectl <span class="hljs-keyword">get</span> namespaces
+</code></pre><p>Then, thanks to Helm, you need to fetch the official Helm of Apache Airflow that will magically get deployed on your cluster. Or, almost magically 😅</p>
+<pre><code>helm repo <span class="hljs-built_in">add</span> apache-airflow http<span class="hljs-variable">s:</span>//airflow.apache.org
+helm repo <span class="hljs-keyword">update</span>
+helm <span class="hljs-built_in">search</span> repo airflow
+helm install airflow apache-airflow/airflow --namespace airflow --<span class="hljs-keyword">debug</span>
+</code></pre><p>After a few minutes, you should be able to see your Pods running, corresponding to the different Airflow components.</p>
+<pre><code>kubectl <span class="hljs-keyword">get</span> pods -n airflow
+</code></pre><p>Don’t hesitate to check the current Helm release of your application with</p>
+<pre><code><span class="hljs-attribute">helm ls -n airflow</span>
+</code></pre><p>Basically, each time your deploy a new version of your Airflow chart (after a modification or an update), you will obtain a new release. One of the most important field to take a look at is REVISION. This number will increase, if you made a mistake you can rollback to a previous revision with helm rollback.</p>
+<p>To access the Airflow UI, open a new terminal and execute the following command</p>
+<pre><code><span class="hljs-title">kubectl</span> <span class="hljs-keyword">port</span>-forward svc/airflow-webserver 8080:8080 -n airflow <span class="hljs-comment">--context kind-airflow-cluster</span>
+</code></pre><p>Listen on port 8080 on all addresses, forwarding to 8080</p>
+<pre><code><span class="hljs-symbol">kubectl</span> port-forward <span class="hljs-keyword">svc/airflow-webserver </span><span class="hljs-number">8080</span>:<span class="hljs-number">8080</span> -n airflow --context kind-airflow-cluster --<span class="hljs-keyword">address </span><span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>
+</code></pre><p>Make sure database settings  present in variables.yaml (POSTGRES_HOST and POSTGRES_PORT ) and the ones present in values.yml are pointing to the sbaiv2 database </p>
+<p>If you have some variables or connections that you want to export each time your Airflow instance gets deployed, you can define a ConfigMap. Open variables.yaml. This ConfigMap will export the environment variables under data. Great to have some bootstrap connections/variables.</p>
+<p><code>kubectl apply -f variables.yaml</code></p>
+<h3 id="build-the-custom-docker-image-and-load-it-into-your-local-kubernetes-cluster">Build the custom docker image and load it into your local Kubernetes cluster</h3>
+<pre><code># Run below commands <span class="hljs-keyword">from</span> <span class="hljs-keyword">project</span> root directory
+docker build -t airflow-custom:<span class="hljs-number">1.0</span>.<span class="hljs-number">0</span> -f pipeline<span class="hljs-regexp">/infra-setup/</span>Dockerfile .
+kind load docker-image airflow-custom:<span class="hljs-number">1.0</span>.<span class="hljs-number">0</span> --name airflow-cluster
+</code></pre><p>Note : If you are using MAC M1 machine please use following command to build image :</p>
+<pre><code>docker build <span class="hljs-comment">--platform linux/amd64 -t airflow-custom:1.0.0 -f pipeline/infra-setup/Dockerfile .</span>
+</code></pre><h3 id="logs-with-airflow-on-kubernetes">Logs with Airflow on Kubernetes</h3>
+<p>With the KubernetesExecutor, when a task is triggered a POD is created. Once the task is completed, the corresponding POD gets deleted and so the logs.  Therefore, you need to find a way to store your logs somewhere so that you can still access them. For local development, the easiest way is to configure a HostPath PV. Let’s do it! First thing first, you should already have a folder data/ created next to the file kind-custer.yaml.</p>
+<p>Next, to provide a durable location to prevent data from being lost, you have to set up the Persistent Volume.</p>
+<pre><code>kubectl <span class="hljs-built_in">apply</span> -f <span class="hljs-built_in">pv</span>.yaml
+kubectl <span class="hljs-built_in">get</span> <span class="hljs-built_in">pv</span> -n airflow
+</code></pre><p>Then, you create a Persistent Volume Claim so that you bind the PV with Airflow.</p>
+<pre><code>kubectl <span class="hljs-built_in">apply</span> -f pvc.yaml 
+kubectl <span class="hljs-built_in">get</span> pvc -n airflow
+</code></pre><p>And finally, deploy Airflow on Kubernetes again.</p>
+<pre><code>helm <span class="hljs-keyword">ls</span> -n airflow 
+helm upgrade --install airflow apache-airflow/airflow -n airflow -<span class="hljs-keyword">f</span> <span class="hljs-built_in">values</span>.yaml --timeout=<span class="hljs-number">10</span><span class="hljs-keyword">m</span> --<span class="hljs-keyword">debug</span> 
+helm <span class="hljs-keyword">ls</span> -n airflow
+</code></pre><p>Some useful commands related to Helm(Rollback to specific deployment)</p>
+<pre><code>helm <span class="hljs-keyword">rollback</span> airflow &lt;<span class="hljs-keyword">release</span>-<span class="hljs-keyword">version</span>&gt; -n airflow
+</code></pre><p>In case of timeout error please increase timeout by adding --timeout=15m. </p>
+<p>The logs should be accessible in infra-setup/data folder. Please check that this folder has the right permissions. You can do so by executing the following command:</p>
+<pre><code><span class="hljs-title">chmod</span> <span class="hljs-number">777</span> ./<span class="hljs-class"><span class="hljs-keyword">data</span></span>
+</code></pre><h3 id="next-steps">Next Steps</h3>
+<ul>
+<li>If the installation is done on a VM, it&#39;s possible to create a network tunnel to be able to view the Django admin and Airflow UI on local machine by running the following command with the port numbers for Airflow or Django: </li>
+</ul>
+<pre><code>ssh -i<span class="hljs-variable">&lt;pemfile&gt;</span> -N -L <span class="hljs-number">8000</span>:<span class="hljs-variable">&lt;VM IP ADDRESS&gt;</span>:<span class="hljs-number">8000</span> <span class="hljs-variable">&lt;USERNAME&gt;</span>@<span class="hljs-variable">&lt;VM IP ADDRESS&gt;</span> -- <span class="hljs-keyword">to</span> be executed <span class="hljs-keyword">on</span> local machine
+</code></pre><ul>
+<li>The pipelines are setup to ingest data from files hosted on s3. If you&#39;re using this storage service, you need to make sure your machine has IAM role to access ,list , delete and update files on s3 bucket you’re using for dags. 
+When working with VMs, please contact gamma platform for creating IAM role to enable access to the s3 bucket.</li>
+</ul>
+<h3 id="debugging-and-useful-commands">Debugging and useful commands</h3>
+<p>Here are some commands to help you debug errors. </p>
+<ul>
+<li><p>To list pods and check which one is failing :</p>
+<pre><code>kubectl <span class="hljs-keyword">get</span> pods -n airflow
+</code></pre></li>
+<li><p>To check logs for specific pod : </p>
+<pre><code>Kubectl logs pod-<span class="hljs-built_in">name</span> -n airflow
+</code></pre></li>
+<li>To execute scheduler pod and access airflow folders:<pre><code>kubectl exec scheduler-pod-<span class="hljs-built_in">name</span> -n airflow -<span class="hljs-keyword">it</span> <span class="hljs-comment">-- /bin/bash</span>
+</code></pre></li>
+<li>To restore a specific version deployed <pre><code>helm <span class="hljs-keyword">rollback</span> airflow &lt;<span class="hljs-keyword">version</span>-<span class="hljs-built_in">number</span>&gt; -n airflow
+</code></pre></li>
+<li><p>To describe pod execution :  </p>
+<pre><code>kubectl <span class="hljs-keyword">describe</span> pod pod-<span class="hljs-keyword">name</span> –n airflow
+</code></pre></li>
+<li><p>In case of DAG Processor timeout error please increase timeout for the following parameters(AIRFLOW<strong>CORE</strong>DAG_FILE_PROCESSOR_TIMEOUT) in values.yaml file in pipeline/infra .Make sure to build the image and deploy it again. </p>
+</li>
+</ul>
