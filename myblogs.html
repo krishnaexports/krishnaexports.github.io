@@ -21,6 +21,35 @@
     <link rel="stylesheet" href="css/flaticon.css">
     <link rel="stylesheet" href="css/icomoon.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .code-section{
+            background-color: #efefef;
+            max-height: 600px;
+            width: 1000px;
+            overflow: auto;
+            padding-left:0.5rem;
+            padding-top:0.5rem;
+            padding-right:0.5rem;
+        }
+      .inner-header{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+      .title{
+          font-size: 16px;
+          text-decoration: underline;
+          font-weight: 600;
+          cursor: pointer;
+      }
+      .icon-padding{
+        padding-right:1rem;
+      }
+      ul > li{
+          margin: 1rem;
+      }
+      
+  </style>
   </head>
   <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
 	  
@@ -46,69 +75,66 @@
       <section class="ftco-about ftco-counter img ftco-section" id="about-section">
     	<div class="container">
     		<div class="row d-flex">
-    			<div class="col-md-6 col-lg-5 d-flex">
-    				<div class="img-about img d-flex align-items-stretch">
-    					<div class="overlay"></div>
-	    				<div class="img d-flex align-self-stretch align-items-center" style="background-image:url(images/about-1.jpg);">
-	    				</div>
-    				</div>
-    			</div>
-    			<div class="col-md-6 col-lg-7 pl-lg-5 py-5">
+    			<div>
     				<div class="row justify-content-start pb-3">
 		          <div class="col-md-12 heading-section ftco-animate">
 		          	<span class="subheading">Welcome</span>
-		            <h2 class="mb-4" style="font-size: 34px; text-transform: capitalize;">About Me</h2>
-		            <p>AWS Certified IT Solutions Professional with proven technical, interpersonal, and leadership skills, utilized in demanding client environments. Skilled in working with various technologies with almost 5 years experience, highly focused on teamwork. Well aware of the bottom line and exceeding both internal and external customer conditions for success.
-Skilled at providing hands-on expertise, recommendations, relevant and timely solutions. Able to break down challenges to their basic and fundamental roots. An insightful employee with an eye toward problem-solving in as economical and effective a manner as is possible. Ready, willing, and able to function in any role necessary to ensure project success and on-time delivery.</br>Favourite Quote - <i>"The cloud is for everyone. The cloud is a democracy.”</i> ~ Marc Benioff, Founder, CEO and Chairman of Salesforce</p>
+		            <h2 class="mb-4" style="font-size: 34px; text-transform: capitalize;">My Blogs</h2>
+		            <p>List of Blogs related to Data Engineering, AWS, Devops and much more.</p>
 		          </div>
 		        </div>
 		        <div class="row">
-		        	<div class="col-md-6">
-		        		<div class="media block-6 services d-block ftco-animate">
-		              <div class="icon"><span class="flaticon-analysis"></span></div>
+		        	<div>
+		        		<div class="media block-6 services ftco-animate">
+		              <div class="icon icon-padding"><span class="flaticon-analysis"></span></div>
 		              <div class="media-body">
-		                <h3 class="heading mb-3">Software Application</h3>
-		                <p>Expertise in development and deployment of scalable applications for Windows, MAC and Linux using varying technologies.</p>
+		                <h3 class="heading mb-3"><a href="/posts/airflow-on-local.html">Install airflow on local/linux/AWS EC2 Kubernetes(k8s) using kind</a></h3>
+                    <div class="code-section">
+		                <pre>Steps involved to successfully setup airflow using Kubernetes.</pre>
+                  </div>
 		              </div>
 		            </div> 
 		        	</div>
-		        	<div class="col-md-6">
-		        		<div class="media block-6 services d-block ftco-animate">
-		              <div class="icon"><span class="flaticon-analysis"></span></div>
-		              <div class="media-body">
-		                <h3 class="heading mb-3">Cloud Computing</h3>
-		                <p>Knowledge of both Private and Public Cloud Computing service market(AWS/Azure), models, offering types, and architecture concepts.</p>
-		              </div>
-		            </div> 
-		        	</div>
-		        	<div class="col-md-6">
-		        		<div class="media block-6 services d-block ftco-animate">
-		              <div class="icon"><span class="flaticon-analysis"></span></div>
-		              <div class="media-body">
-		                <h3 class="heading mb-3">Big Data Enthusiast</h3>
-		                <p>Managed and performed various transformations and actions on data at rest and in movement(real time).</p>
-		              </div>
-		            </div> 
-		        	</div>
-		        	<div class="col-md-6">
-		        		<div class="media block-6 services d-block ftco-animate">
-		              <div class="icon"><span class="flaticon-analysis"></span></div>
-		              <div class="media-body">
-		                <h3 class="heading mb-3">IoT Applications</h3>
-		                <p>Experience in developing various types and sizes of applications using Python primarily.</p>
-		              </div>
-		            </div> 
-		        	</div>
-
-		        </div>
-	          <div class="counter-wrap ftco-animate d-flex mt-md-3">
-              <div class="text p-4 pr-5 bg-primary">
-              	<p class="mb-0">
-	                <txt class="number" data-number="10">0</txt>+
-	                <span>Completed Large Scale Projects</span>
-                </p>
               </div>
-	          </div>
+              <div class="row">
+                <div>
+                  <div class="media block-6 services ftco-animate">
+                    <div class="icon icon-padding"><span class="flaticon-analysis"></span></div>
+                    <div class="media-body">
+                      <h3 class="heading mb-3"><a href="/posts/airflow-on-local.html">Install airflow on local/linux/AWS EC2 Kubernetes(k8s) using kind</a></h3>
+                      <div class="code-section">
+                      <pre>Steps involved to successfully setup airflow using Kubernetes.</pre>
+                    </div>
+                    </div>
+                  </div> 
+                </div>
+                </div>
+                <div class="row">
+                  <div>
+                    <div class="media block-6 services ftco-animate">
+                      <div class="icon icon-padding"><span class="flaticon-analysis"></span></div>
+                      <div class="media-body">
+                        <h3 class="heading mb-3"><a href="/posts/airflow-on-local.html">Install airflow on local/linux/AWS EC2 Kubernetes(k8s) using kind</a></h3>
+                        <div class="code-section">
+                        <pre>Steps involved to successfully setup airflow using Kubernetes.</pre>
+                      </div>
+                      </div>
+                    </div> 
+                  </div>
+                  </div>
+                  <div class="row">
+                    <div>
+                      <div class="media block-6 services ftco-animate">
+                        <div class="icon icon-padding"><span class="flaticon-analysis"></span></div>
+                        <div class="media-body">
+                          <h3 class="heading mb-3"><a href="/posts/airflow-on-local.html">Install airflow on local/linux/AWS EC2 Kubernetes(k8s) using kind</a></h3>
+                          <div class="code-section">
+                          <pre>Steps involved to successfully setup airflow using Kubernetes.</pre>
+                        </div>
+                        </div>
+                      </div> 
+                    </div>
+                    </div>
 	        </div>
         </div>
     	</div>
