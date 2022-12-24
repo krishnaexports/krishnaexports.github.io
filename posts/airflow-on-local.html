@@ -1,184 +1,439 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Airflow Local Setup</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src='main.js'></script>
+<html lang="en">
+  <head>
+    <title>Yash Agarwal</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+    
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+
+    <link rel="stylesheet" href="css/aos.css">
+
+    <link rel="stylesheet" href="css/ionicons.min.css">
+    
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/icomoon.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
         .code-section{
             background-color: #efefef;
-            max-width: 600px;
             max-height: 600px;
-            margin-left: 2%;
+            width: 100%;
             overflow: auto;
-            padding-left: 1rem;
+            padding-left:0.5rem;
+            padding-top:0.5rem;
+            padding-right:0.5rem;
         }
-        .sub-heading{
-            font-size: 14px;
-            text-decoration: underline;
-            font-weight: 502;
-        }
-        .body-content{
-            padding-left: 1rem;
-        }
-        .inner-header{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-    </style>
-</head>
-<body>
-    <div class="header">
-        <div class="inner-header">
-            <div></div>
-            <div style="text-decoration: underline;">
-                <h1>Airflow Setup on local linux kind kubernetes cluster</h1>
-            </div>
-            <nav>
-                <a href="https://yashag66.github.io">Home</a> |
-                <a href="blogs.html">My Blogs</a> |
-                <a href="javascript:history.back()">Go Back</a> | 
-                <a href="https://www.linkedin.com/in/yashagarwal66/">LinkedIn</a> |
-            </nav>
+      .inner-header{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+      .title{
+          font-size: 16px;
+          text-decoration: underline;
+          font-weight: 600;
+          cursor: pointer;
+      }
+      .icon-padding{
+        padding-right:1rem;
+      }
+      ul > li{
+          margin: 1rem;
+      }
+      
+  </style>
+  </head>
+  <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+	  
+	  
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target" id="ftco-navbar">
+	    <div class="container">
+	      <a class="navbar-brand" href="index.html">YA</a>
+	      <button class="navbar-toggler js-fh5co-nav-toggle fh5co-nav-toggle" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="oi oi-menu"></span> Menu
+	      </button>
+
+	      <div class="collapse navbar-collapse" id="ftco-nav">
+	        <ul class="navbar-nav nav ml-auto">
+	          <li class="nav-item"><a href="https://yashag66.github.io" class="nav-link"><span>Home</span></a></li>
+	          <li class="nav-item"><a href="" class="nav-link"><span>My Blog</span></a></li>
+              <li class="nav-item"><a href="https://www.linkedin.com/in/yashagarwal66/" class="nav-link" target="_blank"><span>LinkedIn</span></a></li>
+	          <li class="nav-item"><a href="javascript:history.back()" class="nav-link"><span>Back</span></a></li>
+	        </ul>
+	      </div>
+	    </div>
+	  </nav>
+
+      <section class="ftco-about ftco-counter img ftco-section" id="about-section">
+    	<div class="container">
+    		<div class="row d-flex">
+    			<div>
+    				<div class="row justify-content-start pb-3">
+		          <div class="col-md-12 heading-section ftco-animate">
+		          	<span class="subheading">Welcome</span>
+		            <h2 class="mb-4" style="font-size: 34px; text-transform: capitalize;">Airflow Setup on local linux kind kubernetes cluster</h2>
+              </div>
+      <div class="body-content">
+        <div>
+            <p class="sub-heading">Local K8s setup(Kind)</p>
+            <ul>
+                <li><a href="https://docs.docker.com/engine/install/ubuntu/">Install docker</a></li>
+                <li><a href="https://docs.docker.com/compose/install/linux/">Install docker-compose</a></li>
+                <li><a href="https://kind.sigs.k8s.io/docs/user/quick-start/#installing-from-release-binaries">Install kind</a></li>
+                <li><a href="https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/">Install kubectl</a></li>
+            </ul>
         </div>
-    </div>
-    <div class="body-content">
-<div>
-    <p class="sub-heading">Local K8s setup(Kind)</p>
-    <ul>
-        <li>Install docker</li>
-        <li>Install docker-compose</li>
-        <li>Install kind</li>
-        <li>Install kubectl</li>
-    </ul>
-</div>
+        
+        <p>
+            Cluster Setup file(Filename: kind-local-cluster-setup.yaml)
+        </p>
+        
+        <div class="code-section">
+            <pre>
+        # For local kind cluster setup
+        kind: Cluster
+        apiVersion: kind.x-k8s.io/v1alpha4
+        nodes:
+        - role: control-plane
+        - role: worker
+          kubeadmConfigPatches:
+          - |
+            kind: JoinConfiguration
+            nodeRegistration:
+              kubeletExtraArgs:
+                node-labels: "node=worker_1"
+          extraMounts:
+            - hostPath: ./data
+              containerPath: /tmp/data
+        - role: worker
+          kubeadmConfigPatches:
+          - |
+            kind: JoinConfiguration
+            nodeRegistration:
+              kubeletExtraArgs:
+                node-labels: "node=worker_2"
+          extraMounts:
+            - hostPath: ./data
+              containerPath: /tmp/data 
+        - role: worker
+          kubeadmConfigPatches:
+          - |
+            kind: JoinConfiguration
+            nodeRegistration:
+              kubeletExtraArgs:
+                node-labels: "node=worker_3"
+          extraMounts:
+            - hostPath: ./data
+              containerPath: /tmp/data
+            </pre>
+        </div>
+        
+        
+        <p>Create cluster using below command: </p>
+        <div class="code-section">
+            <p>
+                kind create cluster --name airflow-cluster --config kind-local-cluster-setup.yaml 
+            </p>
+        </div>
+        
+        <p>You can do some checks</p>
+        <div class="code-section">
+            <p>
+                kubectl cluster-info<br/>
+                kubectl get nodes -o wide 
+            </p>
+        </div>
+        
+        <p>To deploy Airflow on Kubernetes, the first step is to create a namespace.</p>
+        
+        <div class="code-section">
+            <p>
+                kubectl create namespace airflow <br/>
+                kubectl get namespaces
+            </p>
+        </div>
+        
+        <p>
+            Then, thanks to Helm, you need to fetch the official Helm of Apache Airflow that will magically get deployed on your cluster. Or, almost magically 😅
+        </p>
+        
+        <div class="code-section">
+            <p>
+            helm repo add apache-airflow https://airflow.apache.org <br/>
+            helm repo update <br/>
+            helm search repo airflow <br/>
+            helm install airflow apache-airflow/airflow --namespace airflow --debug
+            </p>
+        </div>
+        <p>After a few minutes, you should be able to see your Pods running, corresponding to the different Airflow components.</p>
+        
+        <div class="code-section">
+            <p>
+                kubectl get pods -n airflow
+            </p>
+        </div>
+        
+        <p>Don’t hesitate to check the current Helm release of your application with</p>
+        <div class="code-section">
+            <p>
+                helm ls -n airflow
+            </p>
+        </div>
+        
+        <p>Basically, each time your deploy a new version of your Airflow chart (after a modification or an update), you will obtain a new release. One of the most important field to take a look at is REVISION. This number will increase, if you made a mistake you can rollback to a previous revision with helm rollback.</p>
+        <p>To access the Airflow UI, open a new terminal and execute the following command</p>
+        <div class="code-section">
+            <p>
+                kubectl port-forward svc/airflow-webserver 8080:8080 -n airflow --context kind-airflow-cluster
+            </p>
+        </div>
+        
+        <p>Listen on port 8080 on all addresses, forwarding to 8080</p>
+        <div class="code-section">
+            <p>
+                kubectl port-forward svc/airflow-webserver 8080:8080 -n airflow --context kind-airflow-cluster --address 0.0.0.0
+            </p>
+        </div>
+        
+        
+        <p>Make sure database settings  present in variables.yaml (POSTGRES_HOST and POSTGRES_PORT ) and the ones present in values.yml are pointing to the sbaiv2 database</p>
+        <p>If you have some variables or connections that you want to export each time your Airflow instance gets deployed, you can define a ConfigMap. Open variables.yaml. This ConfigMap will export the environment variables under data. Great to have some bootstrap connections/variables.</p>
+        <div class="code-section">
+            <p>
+                kubectl apply -f variables.yaml
+            </p>
+        </div>
+        
+        
+        <h3>Build the custom docker image and load it into your local Kubernetes cluster</h3>
+        <div class="code-section">
+            <p>
+                # Run below commands from project root directory <br/>
+                docker build -t airflow-custom:1.0.0 -f pipeline/infra-setup/Dockerfile .<br/>
+                kind load docker-image airflow-custom:1.0.0 --name airflow-cluster
+            </p>
+        </div>
+        
+        <p>Note : If you are using MAC M1 machine please use following command to build image :</p>
+        <div class="code-section">
+            <p>
+                docker build --platform linux/amd64 -t airflow-custom:1.0.0 -f pipeline/infra-setup/Dockerfile . 
+            </p>
+        </div>
+        
+        <h3>Logs with Airflow on Kubernetes</h3>
+        <p>With the KubernetesExecutor, when a task is triggered a POD is created. Once the task is completed, the corresponding POD gets deleted and so the logs.  Therefore, you need to find a way to store your logs somewhere so that you can still access them. For local development, the easiest way is to configure a HostPath PV. Let’s do it! First thing first, you should already have a folder data/ created next to the file kind-custer.yaml.</p>
+        <p>Next, to provide a durable location to prevent data from being lost, you have to set up the Persistent Volume.</p>
+        <div class="code-section">
+            <p>
+                kubectl apply -f pv.yaml <br/>
+                kubectl get pv -n airflow
+            </p>
+        </div>
+        
+        <p>Then, you create a Persistent Volume Claim so that you bind the PV with Airflow.</p>
+        <div class="code-section">
+            <p>
+                kubectl apply -f pvc.yaml <br/>
+                kubectl get pvc -n airflow
+            </p>
+        </div>
+        
+        <p>And finally, deploy Airflow on Kubernetes again.</p>
+        <div class="code-section">
+            <p>
+                helm ls -n airflow <br/>
+                helm upgrade --install airflow apache-airflow/airflow -n airflow -f values.yaml --timeout=10m --debug <br/>
+                helm ls -n airflow
+            </p>
+        </div>
+        
+        <p>Some useful commands related to Helm(Rollback to specific deployment)</p>
+        <div class="code-section">
+            <p>
+                helm rollback airflow &lt;release-version&gt; -n airflow    
+            </p>
+        </div>
+        
+        <p>In case of timeout error please increase timeout by adding --timeout=15m.</p>
+        <p>The logs should be accessible in infra-setup/data folder. Please check that this folder has the right permissions. You can do so by executing the following command:</p>
+        <div class="code-section">
+            <p>
+                chmod 777 ./data
+            </p>
+        </div>
+        
+        <h3>Next Steps</h3>
+        <ul>
+        <li>If the installation is done on a VM, it's possible to create a network tunnel to be able to view the Django admin and Airflow UI on local machine by running the following command with the port numbers for Airflow or Django:</li>
+        </ul>
+        <div class="code-section">
+            <p>
+                ssh -i&lt;pemfile&gt; -N -L 8000:&lt;VM IP ADDRESS&gt;:8000 &lt;USERNAME&gt;@&lt;VM IP ADDRESS&gt; -- to be executed on local machine 
+            </p>
+        </div>
+        
+        
+        <ul>
+        <li>The pipelines are setup to ingest data from files hosted on s3. If you're using this storage service, you need to make sure your machine has IAM role to access ,list , delete and update files on s3 bucket you’re using for dags.
+        When working with VMs, please contact gamma platform for creating IAM role to enable access to the s3 bucket.</li>
+        </ul>
+        <h3>Debugging and useful commands</h3>
+        <p>Here are some commands to help you debug errors.</p>
+        <ul>
+        <li>To list pods and check which one is failing :</li>
+        </ul>
+        
+        <div class="code-section">
+            <p>
+                kubectl get pods -n airflow 
+            </p>
+        </div>
+        
+        
+        <ul>
+        <li>To check logs for specific pod :</li>
+        </ul>
+        <div class="code-section">
+            <p>
+                kubectl logs pod-name -n airflow 
+            </p>
+        </div>
+        
+        <ul>
+        <li>To execute scheduler pod and access airflow folders:</li>
+        </ul>
+        <div class="code-section">
+            <p>
+                kubectl exec scheduler-pod-name -n airflow -it -- /bin/bash 
+            </p>
+        </div>
+        
+        <ul>
+        <li>To restore a specific version deployed</li>
+        </ul>
+        <div class="code-section">
+            <p>
+                helm rollback airflow &lt;version-number&gt; -n airflow 
+            </p>
+        </div>
+        
+        <ul>
+        <li>To describe pod execution :</li>
+        </ul>
+        <div class="code-section">
+            <p>
+                kubectl describe pod pod-name –n airflow 
+            </p>
+        </div>
+        
+        <ul>
+            <li>
+                In case of DAG Processor timeout error please increase timeout for the following parameters(AIRFLOW__CORE__DAG_FILE_PROCESSOR_TIMEOUT) in values.yaml file in pipeline/infra .Make sure to build the image and deploy it again.
+            </li>
+        </ul>
+        
+        </div>
+		          </div>
+		        </div>
+	        </div>
+        </div>
+    	</div>
+    </section>
+		
 
-<div class="code-section">
-    <p>
-        kind create cluster --name airflow-cluster --config kind-local-cluster-setup.yaml 
-    </p>
-</div>
+    <footer class="ftco-footer ftco-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+              <h2 class="ftco-heading-2">Lets talk about</h2>
+              <p>Mountains, Oceans, Biking and New Technologies!! <i class="icon-heart color-danger" aria-hidden="true"></i></p>
+              <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
+                <li class="ftco-animate"><a href="https://www.facebook.com/yash.ag2/"><span class="icon-facebook"></span></a></li>
+                <li class="ftco-animate"><a href="https://www.instagram.com/yash_dance_monkey/?hl=en"><span class="icon-instagram"></span></a></li>
+                <li class="ftco-animate"><a href="https://github.com/yashag66"><span class="icon-github"></span></a></li>
+                <li class="ftco-animate"><a href="https://www.linkedin.com/in/yashagarwal66/"><span class="icon-linkedin"></span></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4 ml-md-4">
+              <h2 class="ftco-heading-2">Links</h2>
+              <ul class="list-unstyled">
+                <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>Home</a></li>
+                <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>About</a></li>
+                <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>Services</a></li>
+                <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>Projects</a></li>
+                <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>Contact</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+             <div class="ftco-footer-widget mb-4">
+              <h2 class="ftco-heading-2">Services</h2>
+              <ul class="list-unstyled">
+                <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>Architecture Design</a></li>
+                <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>Software Development</a></li>
+                <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>Business Strategy</a></li>
+                <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>Data Analysis</a></li>
+                <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>Prototyping/Proof Of Concepts</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+            	<h2 class="ftco-heading-2">Have a Questions?</h2>
+            	<div class="block-23 mb-3">
+	              <ul>
+	                <li><span class="icon icon-map-marker"></span><span class="text">Gurugram, Haryana, India</span></li>
+	                <li><a href="#"><span class="icon icon-phone"></span><span class="text">+91 880-665-5730</span></a></li>
+	                <li><a href="mailto:yashag324@gmail.com"><span class="icon icon-envelope"></span><span class="text">yashag324@gmail.com</span></a></li>
+	              </ul>
+	            </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-center">
 
-<p>You can do some checks</p>
-<div class="code-section">
-    <p>
-        kubectl cluster-info<br/>
-        kubectl get nodes -o wide 
-    </p>
-</div>
+            <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Inspired with <i class="icon-heart color-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+  <p>This website is under construction. New features coming soon!</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    
+  
 
-<p>To deploy Airflow on Kubernetes, the first step is to create a namespace.</p>
+  <!-- loader -->
+  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
 
-<div class="code-section">
-    <p>
-        kubectl create namespace airflow <br/>
-        kubectl get namespaces
-    </p>
-</div>
 
-<p>
-    Then, thanks to Helm, you need to fetch the official Helm of Apache Airflow that will magically get deployed on your cluster. Or, almost magically 😅
-</p>
-
-<div class="code-section">
-    <p>
-    helm repo add apache-airflow https://airflow.apache.org <br/>
-    helm repo update <br/>
-    helm search repo airflow <br/>
-    helm install airflow apache-airflow/airflow --namespace airflow --debug
-    </p>
-</div>
-<p>After a few minutes, you should be able to see your Pods running, corresponding to the different Airflow components.</p>
-<pre><code>kubectl get pods -n airflow
-</code></pre>
-<p>Don’t hesitate to check the current Helm release of your application with</p>
-<pre><code>helm ls -n airflow
-</code></pre>
-<p>Basically, each time your deploy a new version of your Airflow chart (after a modification or an update), you will obtain a new release. One of the most important field to take a look at is REVISION. This number will increase, if you made a mistake you can rollback to a previous revision with helm rollback.</p>
-<p>To access the Airflow UI, open a new terminal and execute the following command</p>
-<pre><code>kubectl port-forward svc/airflow-webserver 8080:8080 -n airflow --context kind-airflow-cluster
-</code></pre>
-<p>Listen on port 8080 on all addresses, forwarding to 8080</p>
-<pre><code>kubectl port-forward svc/airflow-webserver 8080:8080 -n airflow --context kind-airflow-cluster --address 0.0.0.0
-</code></pre>
-<p>Make sure database settings  present in variables.yaml (POSTGRES_HOST and POSTGRES_PORT ) and the ones present in values.yml are pointing to the sbaiv2 database</p>
-<p>If you have some variables or connections that you want to export each time your Airflow instance gets deployed, you can define a ConfigMap. Open variables.yaml. This ConfigMap will export the environment variables under data. Great to have some bootstrap connections/variables.</p>
-<p><code>kubectl apply -f variables.yaml</code></p>
-<h3>Build the custom docker image and load it into your local Kubernetes cluster</h3>
-<pre><code># Run below commands from project root directory
-docker build -t airflow-custom:1.0.0 -f pipeline/infra-setup/Dockerfile .
-kind load docker-image airflow-custom:1.0.0 --name airflow-cluster
-</code></pre>
-<p>Note : If you are using MAC M1 machine please use following command to build image :</p>
-<pre><code>docker build --platform linux/amd64 -t airflow-custom:1.0.0 -f pipeline/infra-setup/Dockerfile . 
-</code></pre>
-<h3>Logs with Airflow on Kubernetes</h3>
-<p>With the KubernetesExecutor, when a task is triggered a POD is created. Once the task is completed, the corresponding POD gets deleted and so the logs.  Therefore, you need to find a way to store your logs somewhere so that you can still access them. For local development, the easiest way is to configure a HostPath PV. Let’s do it! First thing first, you should already have a folder data/ created next to the file kind-custer.yaml.</p>
-<p>Next, to provide a durable location to prevent data from being lost, you have to set up the Persistent Volume.</p>
-<pre><code>kubectl apply -f pv.yaml
-kubectl get pv -n airflow
-</code></pre>
-<p>Then, you create a Persistent Volume Claim so that you bind the PV with Airflow.</p>
-<pre><code>kubectl apply -f pvc.yaml 
-kubectl get pvc -n airflow
-</code></pre>
-<p>And finally, deploy Airflow on Kubernetes again.</p>
-<pre><code>helm ls -n airflow 
-helm upgrade --install airflow apache-airflow/airflow -n airflow -f values.yaml --timeout=10m --debug 
-helm ls -n airflow
-</code></pre>
-<p>Some useful commands related to Helm(Rollback to specific deployment)</p>
-<pre><code>helm rollback airflow &lt;release-version&gt; -n airflow
-</code></pre>
-<p>In case of timeout error please increase timeout by adding --timeout=15m.</p>
-<p>The logs should be accessible in infra-setup/data folder. Please check that this folder has the right permissions. You can do so by executing the following command:</p>
-<pre><code>chmod 777 ./data
-</code></pre>
-<h3>Next Steps</h3>
-<ul>
-<li>If the installation is done on a VM, it's possible to create a network tunnel to be able to view the Django admin and Airflow UI on local machine by running the following command with the port numbers for Airflow or Django:</li>
-</ul>
-<pre><code>ssh -i&lt;pemfile&gt; -N -L 8000:&lt;VM IP ADDRESS&gt;:8000 &lt;USERNAME&gt;@&lt;VM IP ADDRESS&gt; -- to be executed on local machine 
-</code></pre>
-<ul>
-<li>The pipelines are setup to ingest data from files hosted on s3. If you're using this storage service, you need to make sure your machine has IAM role to access ,list , delete and update files on s3 bucket you’re using for dags.
-When working with VMs, please contact gamma platform for creating IAM role to enable access to the s3 bucket.</li>
-</ul>
-<h3>Debugging and useful commands</h3>
-<p>Here are some commands to help you debug errors.</p>
-<ul>
-<li>To list pods and check which one is failing :</li>
-</ul>
-<pre><code>kubectl get pods -n airflow 
-</code></pre>
-<ul>
-<li>To check logs for specific pod :</li>
-</ul>
-<pre><code>Kubectl logs pod-name -n airflow 
-</code></pre>
-<ul>
-<li>To execute scheduler pod and access airflow folders:</li>
-</ul>
-<pre><code>kubectl exec scheduler-pod-name -n airflow -it -- /bin/bash 
-</code></pre>
-<ul>
-<li>To restore a specific version deployed</li>
-</ul>
-<pre><code>helm rollback airflow &lt;version-number&gt; -n airflow 
-</code></pre>
-<ul>
-<li>To describe pod execution :</li>
-</ul>
-<pre><code>kubectl describe pod pod-name –n airflow 
-</code></pre>
-<ul>
-<li>In case of DAG Processor timeout error please increase timeout for the following parameters(AIRFLOW__CORE__DAG_FILE_PROCESSOR_TIMEOUT) in values.yaml file in pipeline/infra .Make sure to build the image and deploy it again.</li>
-</ul>
-</div>
-</body>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery-migrate-3.0.1.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.easing.1.3.js"></script>
+  <script src="js/jquery.waypoints.min.js"></script>
+  <script src="js/jquery.stellar.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.magnific-popup.min.js"></script>
+  <script src="js/aos.js"></script>
+  <script src="js/jquery.animateNumber.min.js"></script>
+  <script src="js/scrollax.min.js"></script>
+  
+  <script src="js/main.js"></script>
+    
+  </body>
 </html>
